@@ -6,22 +6,37 @@ import sticker1 from "./assets/sticker1.gif";
 import sticker2 from "./assets/sticker2.gif";
 import sticker3 from "./assets/sticker3.gif";
 
+// Background images
+import img1 from "./assets/image1.jpeg";
+import img2 from "./assets/image2.jpeg";
+import img3 from "./assets/image3.jpeg";
+import img4 from "./assets/image4.jpeg";
+import img5 from "./assets/image5.jpeg";
+import img6 from "./assets/image6.jpeg";
+import img7 from "./assets/image7.jpeg";
+import img8 from "./assets/image8.jpeg";
+import img9 from "./assets/image9.jpeg";
+
 function App() {
   const [accepted, setAccepted] = useState(false);
   const [hearts, setHearts] = useState([]);
   const [celebrations, setCelebrations] = useState([]);
+  const [floatingImages, setFloatingImages] = useState([]);
   const [stickerIndex, setStickerIndex] = useState(0);
+  const [imageIndex, setImageIndex] = useState(0); // ✅ FIX ADDED
   const [noPosition, setNoPosition] = useState({ top: "65%", left: "60%" });
 
   const audioRef = useRef(null);
 
   const stickers = [sticker1, sticker2, sticker3];
-  const emojis = ["💖", "🎉", "✨", "💥"];
+  const emojis = ["💖", "🎉", "✨", "💥", "❤️"];
+  const bgImages = [img1, img2, img3, img4, img5, img6, img7, img8, img9];
 
-  // Floating hearts + celebrations after YES
+  // Celebration effects after YES
   useEffect(() => {
     if (!accepted) return;
 
+    // Hearts & emoji blasts
     const interval = setInterval(() => {
       setHearts(prev => [
         ...prev,
@@ -36,12 +51,29 @@ function App() {
           emoji: emojis[Math.floor(Math.random() * emojis.length)]
         }
       ]);
-    }, 400);
+    }, 300);
 
-    return () => clearInterval(interval);
-  }, [accepted]);
+    // Floating images sequential loop
+    const imageInterval = setInterval(() => {
+      setFloatingImages(prev => [
+        ...prev,
+        {
+          id: Date.now(),
+          left: Math.random() * 90,
+          src: bgImages[imageIndex]
+        }
+      ]);
 
-  // Stickers one by one loop
+      setImageIndex(prev => (prev + 1) % bgImages.length);
+    }, 1200);
+
+    return () => {
+      clearInterval(interval);
+      clearInterval(imageInterval);
+    };
+  }, [accepted, imageIndex]); // ✅ dependency added
+
+  // Stickers loop one-by-one
   useEffect(() => {
     if (!accepted) return;
 
@@ -54,9 +86,10 @@ function App() {
 
   // Move NO button
   const moveNoButton = () => {
-    const top = Math.random() * 70;
-    const left = Math.random() * 70;
-    setNoPosition({ top: `${top}%`, left: `${left}%` });
+    setNoPosition({
+      top: `${Math.random() * 70}%`,
+      left: `${Math.random() * 70}%`
+    });
   };
 
   // YES clicked
@@ -81,7 +114,7 @@ function App() {
           </div>
         ))}
 
-      {/* Celebration Emojis */}
+      {/* Emoji Celebrations */}
       {accepted &&
         celebrations.map(c => (
           <div
@@ -91,6 +124,18 @@ function App() {
           >
             {c.emoji}
           </div>
+        ))}
+
+      {/* Floating Images */}
+      {accepted &&
+        floatingImages.map(img => (
+          <img
+            key={img.id}
+            src={img.src}
+            className="floating-image"
+            style={{ left: `${img.left}%` }}
+            alt=""
+          />
         ))}
 
       {!accepted ? (
@@ -129,7 +174,6 @@ function App() {
             Our beautiful journey begins now ❤️
           </p>
 
-          {/* Sticker one by one */}
           <div className="sticker-container">
             <img
               key={stickerIndex}

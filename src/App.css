@@ -111,3 +111,49 @@ h2 { font-size: 22px; margin: 10px 0; }
   from { opacity: 0; transform: scale(0.8); }
   to { opacity: 1; transform: scale(1); }
 }
+/* Celebration emojis */
+.celebration {
+  position: absolute;
+  bottom: -30px;
+  font-size: 26px;
+  animation: floatUp 5s linear forwards;
+}
+
+/* Floating images */
+.floating-image {
+  position: absolute;
+  bottom: -100px;
+  width: 90px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 15px;
+  opacity: 0;
+  animation: floatImage 14s linear infinite;
+}
+
+/* Slow continuous floating with fade in/out */
+@keyframes floatImage {
+  0% {
+    bottom: -100px;
+    opacity: 0;
+    transform: scale(0.8) rotate(0deg);
+  }
+
+  15% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.7;
+  }
+
+  85% {
+    opacity: 1;
+  }
+
+  100% {
+    bottom: 120%;
+    opacity: 0;
+    transform: scale(1.2) rotate(20deg);
+  }
+}
